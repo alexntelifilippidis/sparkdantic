@@ -7,8 +7,17 @@ license = { file = "LICENSE" }
 authors = [{ name = "Alex.D"}]
 requires-python = ">=3.10"
 dependencies = [
-  "pydantic>=1.8",
-  "pyspark>=3.0"
+    "pydantic>=1.8",
+    "pyspark==3.5.0",
+    "colorama"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "mypy",
 ]
 
 [build-system]

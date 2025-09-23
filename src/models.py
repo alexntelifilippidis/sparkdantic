@@ -201,6 +201,10 @@ class SparkModel(BaseModel):
         """
         logger = SparkModelLogger.get_logger()
 
+        if hasattr(pydantic_type, '__mro__') and BaseModel in pydantic_type.__mro__:
+            logger.debug(f"Detected nested Pydantic model: {pydantic_type}")
+            return StringType()
+
         type_mapping: Dict[Type[Any], DataType] = {
             str: StringType(),
             int: IntegerType(),

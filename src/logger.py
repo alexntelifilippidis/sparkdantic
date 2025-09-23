@@ -93,7 +93,7 @@ class SparkModelLogger:
         """
         if name not in cls._loggers:
             logger = logging.getLogger(name)
-            logger.setLevel(logging.DEBUG)
+            logger.setLevel(logging.INFO)
 
             # Remove existing handlers to avoid duplicates
             logger.handlers.clear()

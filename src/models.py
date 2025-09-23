@@ -117,8 +117,8 @@ class SparkModel(BaseModel):
            Empty data returns an empty DataFrame with the correct schema.
 
         . warning::
-           Tuple values within data are converted to string representations
-           of dictionaries for compatibility with Spark.
+           Complex nested structures are converted to string representations
+           for compatibility with Spark.
 
         . code-block:: python
 
@@ -157,31 +157,17 @@ class SparkModel(BaseModel):
             ]
             logger.debug(f"Converted {len(data)} dictionary rows to tuples")
 
-        # Convert tuple values to dictionaries while preserving other types
+        # Process complex nested structures
         processed_data = []
         for row in data:
             if isinstance(row, (list, tuple)):
                 processed_row = []
                 for item in row:
-                    if isinstance(item, tuple):
-                        # Convert tuple to dictionary
-                        if (
-                            len(item) == 3
-                        ):  # Assuming address format (street, city, zip)
-                            dict_item = {
-                                "street": item[0],
-                                "city": item[1],
-                                "zip": item[2],
-                            }
-                        else:
-                            # Generic tuple to dict conversion
-                            dict_item = {
-                                f"field_{i}": value for i, value in enumerate(item)
-                            }
-
-                        processed_row.append(str(dict_item))
+                    if isinstance(item, (tuple, dict, list)):
+                        # Convert complex structures to string representation
+                        processed_row.append(str(item))
                     else:
-                        # Keep other types as-is
+                        # Keep simple types as-is
                         processed_row.append(item)
                 processed_data.append(tuple(processed_row))
             else:

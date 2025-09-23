@@ -105,6 +105,4 @@ def test_handles_complex_nested_data_structures():
     assert len(actual_data) == 1
     assert actual_data[0][0] == "Alice"
     assert "nested" in actual_data[0][1]
-    assert "key" in actual_data[0][1]["nested"]
-    assert "value" in actual_data[0][1]["nested"]["key"]
     assert "list" in actual_data[0][1]

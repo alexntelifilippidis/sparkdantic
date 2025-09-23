@@ -1,0 +1,19 @@
+[project]
+name = "sparkdantic"
+version = "0.1.0"
+description = "A playful bridge from Pydantic models to PySpark DataFrames full of sparkly goodness!"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Alex.D"}]
+requires-python = ">=3.10"
+dependencies = [
+  "pydantic>=1.8",
+  "pyspark>=3.0"
+]
+
+[build-system]
+requires = ["hatchling"]         # uv works with any PEP-517 builder
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["sparkdantic"]

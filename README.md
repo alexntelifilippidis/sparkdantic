@@ -30,6 +30,7 @@ uv pip install -e .
 from pyspark.sql import SparkSession
 from src.models import SparkModel
 from pydantic import Field
+from src.spark_types import long
 
 # Create Spark session
 spark = SparkSession.builder.master("local[1]").appName("SparkDantic").getOrCreate()
@@ -37,7 +38,7 @@ spark = SparkSession.builder.master("local[1]").appName("SparkDantic").getOrCrea
 # Define your models
 class Street(SparkModel):
     name: str
-    number: int
+    number: long
 
 class Address(SparkModel):
     street: Street
@@ -92,6 +93,7 @@ Base class that extends Pydantic's `BaseModel` with Spark functionality:
 - `int` → `IntegerType()`
 - `float` → `FloatType()`
 - `bool` → `BooleanType()`
+- `long` → `LongType()`
 - Nested models → `StringType()` (converted to string representation)
 
 ### Tuple Handling

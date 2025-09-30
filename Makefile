@@ -1,4 +1,4 @@
-.PHONY: pip-freeze uv-install uv-sync uv-lock uv-tree uv-outdated test format lint check
+.PHONY: pip-freeze uv-install uv-sync uv-lock uv-tree uv-outdated test format lint check build-wheel
 
 ## ATTENTION! activate virtual environment before running!
 
@@ -63,6 +63,9 @@ uv-export:
 uv-export-dev:
 	uv export --format requirements-txt --group dev --output-file requirements-dev.txt
 
+## Build wheel distribution
+build-wheel:
+	uv build --wheel
 
 #################################################################################
 # Self Documenting Commands                                                     #

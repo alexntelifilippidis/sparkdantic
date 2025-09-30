@@ -1,4 +1,4 @@
-.PHONY: pip-freeze uv-install uv-sync uv-lock uv-tree uv-outdated test format lint
+.PHONY: pip-freeze uv-install uv-sync uv-lock uv-tree uv-outdated test format lint check
 
 ## ATTENTION! activate virtual environment before running!
 
@@ -30,9 +30,13 @@ uv-lock:
 uv-sync:
 	uv sync
 
+## Run checks without fixing
+check:
+	uv run mypy src
+	uv run ruff check .
 ## Run tests with coverage
 test:
-	uv run pytest --cov=src
+	uv run pytest --cov=src --cov-report=term-missing
 
 ## Format code
 format:

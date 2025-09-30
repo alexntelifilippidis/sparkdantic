@@ -117,7 +117,7 @@ sparkdantic/
 
 SparkDantic includes beautiful colored logging with:
 - 🔍 Debug messages in cyan
-- ✨ Info messages in green  
+- ✨ Info messages in green
 - ⚠️ Warnings in yellow
 - ❌ Errors in red
 - 🚨 Critical messages in magenta

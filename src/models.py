@@ -8,7 +8,8 @@ from pyspark.sql.types import (
     IntegerType,
     FloatType,
     BooleanType,
-    DataType, LongType,
+    DataType,
+    LongType,
 )
 
 from src.logger import SparkModelLogger
@@ -53,7 +54,9 @@ class SparkModel(BaseModel):
         fields: list[StructField] = []
         for field_name, field_info in cls.model_fields.items():
             spark_type: DataType = cls._pydantic_to_spark_type(field_info.annotation)
-            annotation_name: str = getattr(field_info.annotation, "__name__", str(field_info.annotation))
+            annotation_name: str = getattr(
+                field_info.annotation, "__name__", str(field_info.annotation)
+            )
             fields.append(StructField(field_name, spark_type, True))
             logger.debug(
                 f"Mapped field '{field_name}': {annotation_name} -> {type(spark_type).__name__}"
@@ -65,14 +68,14 @@ class SparkModel(BaseModel):
 
     @classmethod
     def create_spark_dataframe(
-            cls,
-            spark: SparkSession,
-            data: Union[
-                List[Union[Dict[str, Any], tuple, List[Any]]],
-                Dict[str, Any],
-                tuple,
-                List[Any],
-            ],
+        cls,
+        spark: SparkSession,
+        data: Union[
+            List[Union[Dict[str, Any], tuple, List[Any]]],
+            Dict[str, Any],
+            tuple,
+            List[Any],
+        ],
     ) -> DataFrame:
         """
         Create Spark DataFrame from data using the model's schema.
@@ -105,7 +108,8 @@ class SparkModel(BaseModel):
             field_names: list[str] = [field.name for field in schema.fields]
             data = [
                 tuple(row.get(field_name) for field_name in field_names)  # type: ignore
-                for row in data if isinstance(row, dict)
+                for row in data
+                if isinstance(row, dict)
             ]
             logger.debug(f"Converted {len(data)} dictionary rows to tuples")
 
@@ -141,7 +145,11 @@ class SparkModel(BaseModel):
         """
         logger: Any = SparkModelLogger.get_logger()
 
-        if pydantic_type is not None and hasattr(pydantic_type, "__mro__") and BaseModel in pydantic_type.__mro__:
+        if (
+            pydantic_type is not None
+            and hasattr(pydantic_type, "__mro__")
+            and BaseModel in pydantic_type.__mro__
+        ):
             logger.debug(f"Detected nested Pydantic model: {pydantic_type}")
             return StringType()
 
@@ -153,7 +161,9 @@ class SparkModel(BaseModel):
             long: LongType(),
         }
 
-        spark_type: DataType = type_mapping.get(pydantic_type if pydantic_type is not None else str, StringType())
+        spark_type: DataType = type_mapping.get(
+            pydantic_type if pydantic_type is not None else str, StringType()
+        )
 
         if pydantic_type not in type_mapping:
             logger.warning(f"Unknown type {pydantic_type}, defaulting to StringType")

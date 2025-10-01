@@ -12,8 +12,8 @@ from pyspark.sql.types import (
     LongType,
 )
 
-from src.logger import SparkModelLogger
-from src.spark_types import long
+from .logger import SparkModelLogger
+from .spark_types import long
 
 
 class SparkModel(BaseModel):

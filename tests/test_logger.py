@@ -1,5 +1,5 @@
 import logging
-from src.logger import SparkModelLogger, ColoredFormatter
+from src.sparkdantic.logger import SparkModelLogger, ColoredFormatter
 
 
 def test_logger_outputs_colored_messages():

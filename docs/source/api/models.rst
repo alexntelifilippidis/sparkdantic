@@ -1,11 +1,12 @@
 Models Module
 =============
 
-.. automodule:: src.models
+.. automodule:: sparkdantic.models
    :members:
    :undoc-members:
    :show-inheritance:
    :no-index:
+
 
 Core Classes
 ------------

@@ -62,7 +62,6 @@ jobs:
       - name: 📖 Build documentation
         run: |
           cd docs
-          uv run sphinx-apidoc -o ./source ../src -f
           uv run sphinx-build -b html . build/html
 
       - name: 🚀 Deploy to GitHub Pages

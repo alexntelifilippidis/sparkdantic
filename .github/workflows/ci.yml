@@ -56,9 +56,6 @@ jobs:
       - name: 📦 Install project dependencies
         run: uv sync --extra dev
 
-      - name: 📦 Install documentation dependencies
-        run: uv add --group dev sphinx sphinx_rtd_theme myst_parser
-
       - name: 📖 Build documentation
         run: |
           cd docs

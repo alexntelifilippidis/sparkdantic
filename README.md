@@ -24,83 +24,10 @@ cd sparkdantic
 uv pip install -e .
 ```
 
-## 🎯 Quick Start
+## 📦 Distribution & Docs
 
-```python
-from pyspark.sql import SparkSession
-from src.models import SparkModel
-from pydantic import Field
-from src.spark_types import long
-
-# Create Spark session
-spark = SparkSession.builder.master("local[1]").appName("SparkDantic").getOrCreate()
-
-# Define your models
-class Street(SparkModel):
-    name: str
-    number: long
-
-class Address(SparkModel):
-    street: Street
-    city: str
-    zip_code: str
-
-class User(SparkModel):
-    name: str
-    age: int
-    height: float
-    is_active: bool
-    email: str = Field(default="")
-    address: Address
-
-# Generate Spark schema
-schema = User.create_spark_schema()
-print(schema)
-
-# Create sample data
-data = [
-    {
-        "name": "Alice",
-        "age": 25,
-        "height": 5.6,
-        "is_active": True,
-        "email": "alice@example.com",
-        "address": {
-            "street": {"name": "123 Main St", "number": 0},
-            "city": "Springfield",
-            "zip_code": "12345"
-        }
-    }
-]
-
-# Create DataFrame
-df = User.create_spark_dataframe(spark=spark, data=data)
-df.show(truncate=False)
-```
-
-## 🔧 Core Components
-
-### SparkModel
-Base class that extends Pydantic's `BaseModel` with Spark functionality:
-
-- `create_spark_schema()`: Converts model to PySpark StructType
-- `create_spark_dataframe()`: Creates DataFrame from data using model schema
-- Automatic type mapping from Python types to Spark types
-- Built-in logging with colorful output
-
-### Supported Types
-- `str` → `StringType()`
-- `int` → `IntegerType()`
-- `float` → `FloatType()`
-- `bool` → `BooleanType()`
-- `long` → `LongType()`
-- Nested models → `StringType()` (converted to string representation)
-
-### Tuple Handling
-SparkDantic includes smart tuple processing:
-- Recursive conversion of nested tuples
-- Automatic dictionary conversion for structured data
-- Preserves other data types as-is
+- **Wheel Support**: Build and distribute as a Python wheel.
+- **Documentation**: [GitHub Pages 🌐](https://alexntelifilippidis.github.io/sparkdantic/)
 
 ## 📂 Project Structure
 

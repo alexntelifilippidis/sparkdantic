@@ -18,7 +18,8 @@ dev = [
     "pytest-cov",
     "ruff",
     "mypy",
-    "types-colorama"
+    "types-colorama",
+    "sphinx"
 ]
 
 [build-system]

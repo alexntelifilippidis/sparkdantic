@@ -1,4 +1,4 @@
-name: documentation
+name: 📚 Documentation
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -9,17 +9,25 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-      - name: Install dependencies
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 📦 Install dependencies
         run: |
           pip install sphinx sphinx_rtd_theme myst_parser
-      - name: Sphinx build
+
+      - name: 📖 Build documentation
         run: |
           cd docs
           sphinx-apidoc -o ./source ../src -f
           make html
-      - name: Deploy to GitHub Pages
+
+      - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:

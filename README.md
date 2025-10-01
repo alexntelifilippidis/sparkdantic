@@ -34,8 +34,11 @@ uv pip install -e .
 ```
 sparkdantic/
 ├── src/
-│   ├── models.py          # Main SparkModel class
-│   └── logger.py          # Colored logging utilities
+│   ├── sparkdantic/          # Main package
+│       ├── __init__.py       # Package initialization
+│       ├── spark_types.py    # Type conversion utilities
+│       ├── models.py         # Main SparkModel class
+│       └── logger.py         # Colored logging utilities
 ├── main.py                # Example usage
 ├── pyproject.toml         # Project configuration
 ├── README.md              # This file

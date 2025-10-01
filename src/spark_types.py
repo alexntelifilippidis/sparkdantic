@@ -5,7 +5,6 @@ from pydantic_core import core_schema
 class Long(int):
     """
     Spark LongType: 64-bit signed integer for Spark DataFrames.
-    ...
     """
 
     def __new__(cls, value=0):

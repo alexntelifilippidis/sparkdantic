@@ -59,15 +59,9 @@ jobs:
       - name: 📦 Install documentation dependencies
         run: uv add --group dev sphinx sphinx_rtd_theme myst_parser
 
-      - name: 📁 Create docs directory structure
-        run: |
-          mkdir -p docs/source
-          mkdir -p docs/build
-
       - name: 📖 Build documentation
         run: |
           cd docs
-          export PYTHONPATH="${PYTHONPATH}:$(pwd)/.."
           uv run sphinx-apidoc -o ./source ../src -f
           uv run sphinx-build -b html . build/html
 

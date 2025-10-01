@@ -42,6 +42,7 @@ test:
 format:
 	uv run ruff format .
 
+
 ## Lint code
 lint:
 	uv run ruff check . --fix

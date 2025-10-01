@@ -50,9 +50,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 📦 Install dependencies
-        run: |
-          pip install sphinx sphinx_rtd_theme myst_parser
+      - name: 📦 Install uv
+        run: pip install uv
+
+      - name: 📦 Install project dependencies
+        run: uv sync --extra dev
+
+      - name: 📦 Install documentation dependencies
+        run: uv add --group dev sphinx sphinx_rtd_theme myst_parser
 
       - name: 📁 Create docs directory structure
         run: |
@@ -62,8 +67,9 @@ jobs:
       - name: 📖 Build documentation
         run: |
           cd docs
-          sphinx-apidoc -o ./source ../src -f
-          make html
+          export PYTHONPATH="${PYTHONPATH}:$(pwd)/.."
+          uv run sphinx-apidoc -o ./source ../src -f
+          uv run sphinx-build -b html . build/html
 
       - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

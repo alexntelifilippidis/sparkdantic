@@ -1,11 +1,12 @@
 Logger Module
 =============
 
-.. automodule:: src.logger
+.. automodule:: sparkdantic.logger
    :members:
    :undoc-members:
    :show-inheritance:
    :no-index:
+
 
 Colored Logging System
 ----------------------

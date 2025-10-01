@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from src.models import SparkModel
+from src.sparkdantic import SparkModel
 
 
 def test_dataframe_creation_with_mock_spark():

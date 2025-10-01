@@ -1,11 +1,12 @@
 Spark Types Module
 ==================
 
-.. automodule:: src.spark_types
+.. automodule:: sparkdantic.spark_types
    :members:
    :undoc-members:
    :show-inheritance:
    :no-index:
+
 
 Custom Type Definitions
 -----------------------

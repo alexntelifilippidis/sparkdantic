@@ -61,7 +61,9 @@ jobs:
 
       - name: 📖 Build documentation
         run: |
+          ls -la
           cd docs
+          ls -la
           uv run sphinx-build -b html . build/html
 
       - name: 🚀 Deploy to GitHub Pages

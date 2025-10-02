@@ -29,11 +29,21 @@ SparkModelLogger
 
 The ``SparkModelLogger`` class manages logger instances across your application using a singleton pattern.
 
+Default Log Level
+^^^^^^^^^^^^^^^^^
+
+The logging level is set to ``INFO`` by default. You can change this by setting the ``LOG_LEVEL``
+environment variable to a different level such as ``DEBUG``, ``WARNING``, or ``ERROR``.
+
 **Usage Example:**
 
 .. code-block:: python
 
    from sparkdantic.logger import SparkModelLogger
+   import os
+
+   #Set up log level
+   os.environ["LOGLEVEL"] = "INFO"
 
    # Get a logger instance
    logger = SparkModelLogger.get_logger("MyModule")

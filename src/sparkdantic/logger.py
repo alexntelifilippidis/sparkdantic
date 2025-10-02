@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 from datetime import datetime
 from typing import Dict
@@ -100,9 +101,10 @@ class SparkModelLogger:
            logger = SparkModelLogger.get_logger("MyModule")
            logger.info("This is a colored log message")
         """
+        loglevel = os.getenv("LOGLEVEL", "INFO")
         if name not in cls._loggers:
             logger = logging.getLogger(name)
-            logger.setLevel(logging.INFO)
+            logger.setLevel(getattr(logging, loglevel.upper(), logging.INFO))
 
             # Remove existing handlers to avoid duplicates
             logger.handlers.clear()

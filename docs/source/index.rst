@@ -53,9 +53,9 @@ Basic usage:
    :maxdepth: 2
    :caption: Library Reference:
 
-   api/models
-   api/logger
-   api/spark_types
+   sparkdantic/models
+   sparkdantic/logger
+   sparkdantic/spark_types
 
 .. toctree::
    :maxdepth: 1

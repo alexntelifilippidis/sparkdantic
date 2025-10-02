@@ -75,7 +75,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Built with [Pydantic](https://pydantic-docs.helpmanual.io/) for data validation
 - Powered by [PySpark](https://spark.apache.org/docs/latest/api/python/) for big data processing
-- Colorful logging with [Colorama](https://pypi.org/project/colorama/)
+- Colorful logging
 
 ---
 

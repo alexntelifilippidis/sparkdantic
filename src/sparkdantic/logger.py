@@ -2,60 +2,69 @@ import logging
 import sys
 from datetime import datetime
 from typing import Dict
-from colorama import init, Fore, Style
+from enum import Enum
+from dataclasses import dataclass
 
-# Initialize colorama for cross-platform color support
-init(autoreset=True)
 
+@dataclass(frozen=True)
+class AnsiStyle:
+    black: str = "\033[30m"
+    red: str = "\033[31m"
+    green: str = "\033[32m"
+    yellow: str = "\033[33m"
+    blue: str = "\033[34m"
+    magenta: str = "\033[35m"
+    cyan: str = "\033[36m"
+    white: str = "\033[37m"
+    reset: str = "\033[0m"
+    bright: str = "\033[1m"
+
+ansi_style = AnsiStyle()
+
+class LogLevel(Enum):
+    DEBUG = "DEBUG"
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    CRITICAL = "CRITICAL"
+
+@dataclass(frozen=True)
+class LogLevelConfig:
+    color: str
+    emoji: str
+    color_name: str
+
+LOG_LEVEL_CONFIGS: Dict[LogLevel, LogLevelConfig] = {
+    LogLevel.DEBUG: LogLevelConfig(color=ansi_style.cyan, emoji="🔍", color_name="cyan"),
+    LogLevel.INFO: LogLevelConfig(color=ansi_style.green, emoji="✨", color_name="green"),
+    LogLevel.WARNING: LogLevelConfig(color=ansi_style.yellow, emoji="⚠️", color_name="yellow"),
+    LogLevel.ERROR: LogLevelConfig(color=ansi_style.red, emoji="❌", color_name="red"),
+    LogLevel.CRITICAL: LogLevelConfig(color=ansi_style.magenta, emoji="🚨", color_name="magenta"),
+}
+
+DEFAULT_CONFIG = LogLevelConfig(color=ansi_style.white, emoji="📝", color_name="white")
 
 class ColoredFormatter(logging.Formatter):
-    """Custom formatter with colors and emojis using colorama.
-
-    This formatter adds colored output and emoji icons to log messages
-    for better visual distinction between different log levels.
-
-    :ivar LEVEL_CONFIG: Configuration mapping for log levels including colors and emojis
-    :vartype LEVEL_CONFIG: Dict[str, Dict[str, str]]
-    """
-
-    # Level-specific colors and emojis
-    LEVEL_CONFIG: Dict[str, Dict[str, str]] = {
-        "DEBUG": {"color": Fore.CYAN, "emoji": "🔍"},
-        "INFO": {"color": Fore.GREEN, "emoji": "✨"},
-        "WARNING": {"color": Fore.YELLOW, "emoji": "⚠️"},
-        "ERROR": {"color": Fore.RED, "emoji": "❌"},
-        "CRITICAL": {"color": Fore.MAGENTA, "emoji": "🚨"},
-    }
+    """Custom formatter with colors and emojis using ANSI codes and dataclass/enum config."""
 
     def format(self, record: logging.LogRecord) -> str:
-        """Format a log record with colors and emojis.
-
-        :param record: The log record to format
-        :type record: logging.LogRecord
-        :return: Formatted log message string with colors and emojis
-        :rtype: str
-        """
-        # Get level configuration
-        level_config = self.LEVEL_CONFIG.get(
-            record.levelname, {"color": Fore.WHITE, "emoji": "📝"}
-        )
+        # Try to get config from enum, fallback to default
+        try:
+            level_enum = LogLevel[record.levelname]
+            config = LOG_LEVEL_CONFIGS[level_enum]
+        except (KeyError, ValueError):
+            config = DEFAULT_CONFIG
 
         # Format timestamp with white color
-        timestamp = f"{Fore.WHITE}{datetime.fromtimestamp(record.created).strftime('%Y-%m-%d %H:%M:%S')}"
-
+        timestamp = f"{ansi_style.white}{datetime.fromtimestamp(record.created).strftime('%Y-%m-%d %H:%M:%S')}{ansi_style.reset}"
         # Format logger name with blue color and bold
-        logger_name = f"{Fore.BLUE}{Style.BRIGHT}{record.name}"
-
+        logger_name = f"{ansi_style.blue}{ansi_style.bright}{record.name}{ansi_style.reset}"
         # Format level with specific color and emoji
-        level_color = level_config["color"]
-        level_text = f"{level_color}{level_config['emoji']} {record.levelname}"
-
+        level_text = f"{config.color}{config.emoji} {record.levelname}{ansi_style.reset}"
         # Format message with level-specific color
-        message = f"{level_color}{record.getMessage()}"
-
+        message = f"{config.color}{record.getMessage()}{ansi_style.reset}"
         # Combine all parts with dashes
         return f"{timestamp} - {logger_name} - {level_text} - {message}"
-
 
 class SparkModelLogger:
     """Custom logger for SparkModel with colors and emojis.

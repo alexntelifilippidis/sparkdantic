@@ -24,7 +24,6 @@ repos:
           pydantic,
           pyspark,
           types-requests,
-          types-colorama,
           pytest
         ]
 

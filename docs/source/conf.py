@@ -57,7 +57,7 @@ autodoc_default_options = {
 }
 
 # Mock imports for dependencies that might not be available during doc build
-autodoc_mock_imports = ["pyspark", "colorama", "pydantic", "pydantic_core"]
+autodoc_mock_imports = ["pyspark", "pydantic", "pydantic_core"]
 
 
 # -- Napoleon settings -------------------------------------------------------

@@ -158,6 +158,11 @@ class SparkModel(BaseModel):
                 pydantic_type = non_none_type
                 logger.debug(f"detected optional type, using underlying type: {non_none_type}")
 
+        # Handle List types
+        if get_origin(pydantic_type) is list or pydantic_type is list:
+            logger.debug(f"detected list type: {pydantic_type}")
+            return StringType()
+
         # Handle Dict types
         if get_origin(pydantic_type) is dict or pydantic_type is dict:
             logger.debug(f"detected dict type: {pydantic_type}")
@@ -178,13 +183,14 @@ class SparkModel(BaseModel):
             bool: BooleanType(),
             long: LongType(),
             dict: StringType(),
+            list: StringType(),
         }
 
         spark_type: DataType = type_mapping.get(
             pydantic_type if pydantic_type is not None else str, StringType()
         )
 
-        if pydantic_type not in type_mapping and get_origin(pydantic_type) not in [dict, typing.Union]:
+        if pydantic_type not in type_mapping and get_origin(pydantic_type) not in [dict, list, typing.Union]:
             logger.warning(f"unknown type {pydantic_type}, defaulting to stringtype")
 
         return spark_type

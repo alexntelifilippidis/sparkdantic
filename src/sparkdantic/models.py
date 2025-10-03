@@ -1,3 +1,7 @@
+import typing
+
+from typing import get_origin, get_args
+
 from pydantic import BaseModel
 from typing import Any, List, Dict, Union, Type, ClassVar
 from pyspark.sql import SparkSession, DataFrame
@@ -133,8 +137,8 @@ class SparkModel(BaseModel):
 
         return df
 
-    @staticmethod
-    def _pydantic_to_spark_type(pydantic_type: Type[Any] | None) -> DataType:
+    @classmethod
+    def _pydantic_to_spark_type(cls, pydantic_type: Type[Any] | None) -> DataType:
         """
         Map Pydantic types to Spark types.
 
@@ -143,14 +147,33 @@ class SparkModel(BaseModel):
         :return: Corresponding Spark SQL data type
         :rtype: DataType
         """
-        logger: Any = SparkModelLogger.get_logger()
+        logger: Any = getattr(cls, "_logger", SparkModelLogger.get_logger())
+
+        # Handle Optional types (Union[T, None])
+        if get_origin(pydantic_type) is typing.Union:
+            args = get_args(pydantic_type)
+            if len(args) == 2 and type(None) in args:
+                # This is Optional[T], extract the non-None type
+                non_none_type = next(arg for arg in args if arg is not type(None))
+                pydantic_type = non_none_type
+                logger.debug(f"detected optional type, using underlying type: {non_none_type}")
+
+        # Handle List types
+        if get_origin(pydantic_type) is list or pydantic_type is list:
+            logger.debug(f"detected list type: {pydantic_type}")
+            return StringType()
+
+        # Handle Dict types
+        if get_origin(pydantic_type) is dict or pydantic_type is dict:
+            logger.debug(f"detected dict type: {pydantic_type}")
+            return StringType()
 
         if (
-            pydantic_type is not None
-            and hasattr(pydantic_type, "__mro__")
-            and BaseModel in pydantic_type.__mro__
+                pydantic_type is not None
+                and hasattr(pydantic_type, "__mro__")
+                and BaseModel in pydantic_type.__mro__
         ):
-            logger.debug(f"Detected nested Pydantic model: {pydantic_type}")
+            logger.debug(f"detected nested pydantic model: {pydantic_type}")
             return StringType()
 
         type_mapping: dict[Type[Any], DataType] = {
@@ -159,14 +182,16 @@ class SparkModel(BaseModel):
             float: FloatType(),
             bool: BooleanType(),
             long: LongType(),
+            dict: StringType(),
+            list: StringType(),
         }
 
         spark_type: DataType = type_mapping.get(
             pydantic_type if pydantic_type is not None else str, StringType()
         )
 
-        if pydantic_type not in type_mapping:
-            logger.warning(f"Unknown type {pydantic_type}, defaulting to StringType")
+        if pydantic_type not in type_mapping and get_origin(pydantic_type) not in [dict, list, typing.Union]:
+            logger.warning(f"unknown type {pydantic_type}, defaulting to stringtype")
 
         return spark_type
 

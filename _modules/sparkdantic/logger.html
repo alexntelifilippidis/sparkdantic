@@ -1,0 +1,250 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sparkdantic.logger &mdash; SparkDantic 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SparkDantic
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Library Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../sparkdantic/models.html">Models Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparkdantic/logger.html">Logger Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparkdantic/spark_types.html">Spark Types Module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/basic_usage.html">Basic Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/advanced_features.html">Advanced Features</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SparkDantic</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sparkdantic.logger</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sparkdantic.logger</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+
+<div class="viewcode-block" id="AnsiStyle">
+<a class="viewcode-back" href="../../sparkdantic/logger.html#sparkdantic.logger.AnsiStyle">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnsiStyle</span><span class="p">:</span>
+    <span class="n">black</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[30m&quot;</span>
+    <span class="n">red</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[31m&quot;</span>
+    <span class="n">green</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[32m&quot;</span>
+    <span class="n">yellow</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33m&quot;</span>
+    <span class="n">blue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[34m&quot;</span>
+    <span class="n">magenta</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[35m&quot;</span>
+    <span class="n">cyan</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[36m&quot;</span>
+    <span class="n">white</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[37m&quot;</span>
+    <span class="n">reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+    <span class="n">bright</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m&quot;</span></div>
+
+
+<span class="n">ansi_style</span> <span class="o">=</span> <span class="n">AnsiStyle</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LogLevel">
+<a class="viewcode-back" href="../../sparkdantic/logger.html#sparkdantic.logger.LogLevel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogLevel</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="s2">&quot;DEBUG&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span>
+    <span class="n">WARNING</span> <span class="o">=</span> <span class="s2">&quot;WARNING&quot;</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;ERROR&quot;</span>
+    <span class="n">CRITICAL</span> <span class="o">=</span> <span class="s2">&quot;CRITICAL&quot;</span></div>
+
+
+<div class="viewcode-block" id="LogLevelConfig">
+<a class="viewcode-back" href="../../sparkdantic/logger.html#sparkdantic.logger.LogLevelConfig">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogLevelConfig</span><span class="p">:</span>
+    <span class="n">color</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">color_name</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<span class="n">LOG_LEVEL_CONFIGS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">LogLevel</span><span class="p">,</span> <span class="n">LogLevelConfig</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LogLevel</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span> <span class="n">LogLevelConfig</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">cyan</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;🔍&quot;</span><span class="p">,</span> <span class="n">color_name</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
+    <span class="n">LogLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span> <span class="n">LogLevelConfig</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;✨&quot;</span><span class="p">,</span> <span class="n">color_name</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">),</span>
+    <span class="n">LogLevel</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span> <span class="n">LogLevelConfig</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">yellow</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;⚠️&quot;</span><span class="p">,</span> <span class="n">color_name</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">),</span>
+    <span class="n">LogLevel</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span> <span class="n">LogLevelConfig</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;❌&quot;</span><span class="p">,</span> <span class="n">color_name</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">),</span>
+    <span class="n">LogLevel</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="n">LogLevelConfig</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">magenta</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;🚨&quot;</span><span class="p">,</span> <span class="n">color_name</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">DEFAULT_CONFIG</span> <span class="o">=</span> <span class="n">LogLevelConfig</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;📝&quot;</span><span class="p">,</span> <span class="n">color_name</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ColoredFormatter">
+<a class="viewcode-back" href="../../sparkdantic/logger.html#sparkdantic.logger.ColoredFormatter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ColoredFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom formatter with colors and emojis using ANSI codes and dataclass/enum config.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ColoredFormatter.format">
+<a class="viewcode-back" href="../../sparkdantic/logger.html#sparkdantic.logger.ColoredFormatter.format">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># Try to get config from enum, fallback to default</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">level_enum</span> <span class="o">=</span> <span class="n">LogLevel</span><span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">levelname</span><span class="p">]</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">LOG_LEVEL_CONFIGS</span><span class="p">[</span><span class="n">level_enum</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">DEFAULT_CONFIG</span>
+
+        <span class="c1"># Format timestamp with white color</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">white</span><span class="si">}{</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">created</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}{</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># Format logger name with blue color and bold</span>
+        <span class="n">logger_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">blue</span><span class="si">}{</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">bright</span><span class="si">}{</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># Format level with specific color and emoji</span>
+        <span class="n">level_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">color</span><span class="si">}{</span><span class="n">config</span><span class="o">.</span><span class="n">emoji</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">levelname</span><span class="si">}{</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># Format message with level-specific color</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">color</span><span class="si">}{</span><span class="n">record</span><span class="o">.</span><span class="n">getMessage</span><span class="p">()</span><span class="si">}{</span><span class="n">ansi_style</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># Combine all parts with dashes</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">logger_name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">level_text</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span></div>
+</div>
+
+
+<div class="viewcode-block" id="SparkModelLogger">
+<a class="viewcode-back" href="../../sparkdantic/logger.html#sparkdantic.logger.SparkModelLogger">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SparkModelLogger</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom logger for SparkModel with colors and emojis.</span>
+
+<span class="sd">    This class provides a singleton-like pattern for managing colored loggers</span>
+<span class="sd">    across the SparkModel application. It ensures that each named logger</span>
+<span class="sd">    is created only once and configured with the custom ColoredFormatter.</span>
+
+<span class="sd">    :cvar _loggers: Cache of created logger instances</span>
+<span class="sd">    :vartype _loggers: Dict[str, logging.Logger]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_loggers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="SparkModelLogger.get_logger">
+<a class="viewcode-back" href="../../sparkdantic/logger.html#sparkdantic.logger.SparkModelLogger.get_logger">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_logger</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SparkModel&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or create a colored logger instance.</span>
+
+<span class="sd">        Creates a new logger with ColoredFormatter if it doesn&#39;t exist,</span>
+<span class="sd">        or returns the existing logger for the given name.</span>
+
+<span class="sd">        :param name: Name of the logger to create or retrieve</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :return: Configured logger instance with colored formatting</span>
+<span class="sd">        :rtype: logging.Logger</span>
+
+<span class="sd">        . note::</span>
+<span class="sd">           The logger is configured with DEBUG level and uses stdout for output.</span>
+<span class="sd">           Propagation is disabled to prevent duplicate messages.</span>
+
+<span class="sd">        . code-block:: python</span>
+
+<span class="sd">           logger = SparkModelLogger.get_logger(&quot;MyModule&quot;)</span>
+<span class="sd">           logger.info(&quot;This is a colored log message&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loglevel</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;LOGLEVEL&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_loggers</span><span class="p">:</span>
+            <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">logging</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">))</span>
+
+            <span class="c1"># Remove existing handlers to avoid duplicates</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+            <span class="c1"># Create console handler</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+            <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">ColoredFormatter</span><span class="p">())</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_loggers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_loggers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alex.D.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
